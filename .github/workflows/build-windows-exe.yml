@@ -1,1 +1,33 @@
-.github/workflows/build-windows-exe.yml
+name: Build Windows EXE
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pillow pyinstaller
+
+      - name: Build exe
+        run: |
+          pyinstaller --noconsole --onefile --name "JPG_H2V2_변환기" converter.py
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: JPG_H2V2_변환기_windows
+          path: dist/JPG_H2V2_변환기.exe
