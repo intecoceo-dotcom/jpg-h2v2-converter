@@ -29,7 +29,12 @@ def convert_one(path: str, quality: int = QUALITY_DEFAULT, progressive: bool = F
             if progressive:
                 save_kwargs["progressive"] = True
 
-            im.save(tmp_path, **save_kwargs)
+            im.save(
+    tmp_path,
+    dpi=(300, 300),
+    **save_kwargs
+)
+
 
         os.replace(tmp_path, path)
         return True, "OK"
@@ -160,3 +165,4 @@ if __name__ == "__main__":
         App().mainloop()
     except KeyboardInterrupt:
         sys.exit(0)
+
