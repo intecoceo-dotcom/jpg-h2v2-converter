@@ -1,0 +1,37 @@
+name: Build macOS APP
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-mac:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pillow pyinstaller
+
+      - name: Build app
+        run: |
+          pyinstaller --noconsole --windowed --name "JPG_H2V2_변환기" converter.py
+
+      - name: Zip app
+        run: |
+          ditto -c -k --sequesterRsrc --keepParent "dist/JPG_H2V2_변환기.app" "JPG_H2V2_변환기_mac.zip"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: JPG_H2V2_변환기_mac
+          path: JPG_H2V2_변환기_mac.zip
